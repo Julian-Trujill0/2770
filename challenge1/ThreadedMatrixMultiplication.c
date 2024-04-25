@@ -8,7 +8,7 @@
 int matrixA[MATRIX_SIZE][MATRIX_SIZE];
 int matrixB[MATRIX_SIZE][MATRIX_SIZE];
 int resultMatrix[MATRIX_SIZE][MATRIX_SIZE];
-int caluclationCounter = 0;
+int calculationCounter = 0;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -23,7 +23,7 @@ void *multiply(void *arg) {
     for (int i = 0; i < MATRIX_SIZE; i++) {
         pthread_mutex_lock(&mutex);
         calculationCounter++;
-        pthread_mutex_unlock(&mutex;)
+        pthread_mutex_unlock(&mutex);
 
         resultMatrix[data->row][data->col] += matrixA[data->row][i] * matrixB[i][data->col];
     }
