@@ -1,14 +1,18 @@
 CC = gcc
-CFLAGS = -unistd
-SRCS = HTTP_SERVER.c
-OBJS = $(SRCS:.c=.o)
-TARGET = challenge2
+CFLAGS = -pthread -Wall -Wextra
+SRCS_SERVER = HTTP_Server.c
+SRCS_CLIENT = HTTP_Client.c
+OBJS_SERVER = $(SRCS_SERVER:.c=.o)
+OBJS_CLIENT = $(SRCS_CLIENT:.c=.o)
+TARGETS = server client
 
-all: $(TARGET)
+all: $(TARGETS)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+server: $(OBJS_SERVER)
+        $(CC) $(CFLAGS) -o server $(OBJS_SERVER)
+
+client: $(OBJS_CLIENT)
+        $(CC) $(CFLAGS) -o client $(OBJS_CLIENT)
+
 clean:
-	rm -f $(OBJS) $(TARGET)
+        rm -f $(OBJS_SERVER) $(OBJS_CLIENT) $(TARGETS)

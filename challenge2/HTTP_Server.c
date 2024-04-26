@@ -10,7 +10,19 @@
 void *connection_handler(void *socket_desc) {
     int sock = *(int*)socket_desc;
     char *hello = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 12\n\nHello, world!";
-    write(sock, hello, strlen(hello));
+    char buffer[1024] = {0};
+    char method[16];
+    char url[1024];
+    char protocol[16];
+
+    read(sock, buffer, 1024);
+
+    sscanf(buffer, "%s %s %s", method, url, protocol);
+
+    char response[2048];
+    sprintf(response, "%sMethod: %s\nURL: %s\nProtocol: %s\n\nHello, world", hello, method, url, protocol);
+
+    write(sock, response, strlen(response));
     printf("Response sent\n");
     close(sock);
     free(socket_desc);
@@ -42,17 +54,17 @@ int main() {
         perror("listen");
         exit(EXIT_FAILURE);
     }
-    
+
     while(1) {
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0) {
             perror("accept");
             exit(EXIT_FAILURE);
         }
-        
+
         pthread_t thread;
         new_sock = malloc(sizeof(int));
         *new_sock = new_socket;
-        
+
         if (pthread_create(&thread, NULL, connection_handler, (void*)new_sock) < 0) {
             perror("could not create thread");
             exit(EXIT_FAILURE);
