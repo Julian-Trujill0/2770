@@ -1,4 +1,4 @@
-include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -35,6 +35,16 @@ void error(const char *msg) {
     exit(EXIT_FAILURE);
 }
 
+time_t getLocalTime() {
+    time_t current_time;
+    struct tm *local_time;
+
+    // Get current time
+    current_time = time(NULL);
+
+    return current_time;
+}
+
 time_t getNTPTime() {
     int sockfd, n;
     struct sockaddr_in serv_addr;
@@ -55,7 +65,7 @@ time_t getNTPTime() {
 
     if (sendto(sockfd, &packet, sizeof(packet), 0, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR sending packet");
-    
+
     n = recv(sockfd, &packet, sizeof(packet), 0);
     if (n < 0)
         error("ERROR receiving response");
