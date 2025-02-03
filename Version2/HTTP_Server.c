@@ -34,7 +34,7 @@ void *connection_handler(void *socket_desc) {
         "\r\n"
         "%s";
 
-    const char *body = "<html><body><h1>Hello, world!</h1></body></html>";
+    const char *body = "Hello, world!";
     char response[2048];
     int response_length = snprintf(response, sizeof(response), response_template, (int)strlen(body), body);
 
