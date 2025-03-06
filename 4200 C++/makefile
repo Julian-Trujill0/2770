@@ -16,16 +16,18 @@ OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 TARGETS = $(BIN_DIR)/server $(BIN_DIR)/client
 
 # Default Target
-all: check_openssl $(TARGETS)
+all: check_dependencies $(TARGETS)
 
-# Check and Install OpenSSL if Necessary
-check_openssl:
-	@if ! pkg-config --exists openssl; then \
-		echo "OpenSSL not found. Installing..."; \
-		sudo apt-get update && sudo apt-get install -y libssl-dev; \
-	else \
-		echo "OpenSSL is already installed."; \
-	fi
+# Check and Install Dependencies if Necessary
+check_dependencies:
+	@which apt-get > /dev/null && { \
+		echo "Updating package lists..."; \
+		sudo apt-get update; \
+		echo "Installing build-essential and libssl-dev..."; \
+		sudo apt-get install -y build-essential libssl-dev; \
+	} || { \
+		echo "apt-get not found. Please install build-essential and libssl-dev manually."; \
+	}
 
 # Build Server
 $(BIN_DIR)/server: $(OBJ_DIR)/server.o
@@ -44,5 +46,4 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
-.PHONY: all clean check_openssl
-
+.PHONY: all clean check_dependencies
